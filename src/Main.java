@@ -4,21 +4,28 @@ import java.util.Scanner;
 
 public class Main {
 
-	static int[][] graph=null;;
+	static HashMap<Integer, ArrayList<Integer> > graph=new HashMap<>();
 	static HashMap<Parameter, Integer> cache = new HashMap<>();
 	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		Scanner sc = new Scanner(System.in);
 		int n = sc.nextInt();
-		graph = new int[n+1][n+1]; // the memory requirement may exceeds limitation.
+		
 		
 		
 		int id1 = sc.nextInt();
 		int id2 = sc.nextInt();
 		
 		while (id1!=0 || id2!=0) {
-			graph[id1][id2]=1;
+			ArrayList<Integer> children =null;
+			if (graph.containsKey(id1)) {
+				children = graph.get(id1);
+			} else {
+				children = new ArrayList<>();
+				graph.put(id1, children);
+			}
+			children.add(id2);
 			
 			id1 = sc.nextInt();
 			id2 = sc.nextInt();
@@ -42,7 +49,11 @@ public class Main {
 			return cache.get(parameter);
 		}
 		
-		for (int child:getChildren(id1)) {
+		if (!graph.containsKey(id1))
+			return 0;
+		
+		ArrayList<Integer> children=graph.get(id1);
+		for (int child:children) {
 			sum+=getNoOfPaths(child, id2);
 		}
 		
@@ -50,28 +61,6 @@ public class Main {
 		return sum;
 	}
 
-
-	private static ArrayList<Integer> getChildren(int id) {
-		// TODO Auto-generated method stub
-		ArrayList<Integer> children=new ArrayList<>();
-		for (int i=1;i<graph[id].length;i++) {
-			if (graph[id][i]==1) {
-				children.add(i);
-			}
-		}
-		return children;
-	}
-
-}
-
-class Node {
-	int id;
-	ArrayList<Node> children = new ArrayList<>();
-	
-	public Node(int id) {
-		this.id = id;
-	}
-	
 }
 
 class Parameter {
